@@ -94,7 +94,8 @@ export async function POST(request) {
           6. Ensure cross-browser compatibility with modern web standards.
           7. Leverage the latest JavaScript (ES6+) features and best practices for optimal performance and readability.
           8. Thoughtfully implement all requested functionality while adding creative touches that elevate the user experience.
-          9. Present your masterpiece using the following format:
+          9. Only use images from external known sources.
+          10. Present your masterpiece using the following format:
              [START_HTML]
              <!DOCTYPE html>
              <html>

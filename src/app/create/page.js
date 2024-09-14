@@ -246,7 +246,7 @@ export default function CreatePage() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="text-4xl font-bold mb-6 text-text-light-primary dark:text-text-dark-primary"
           >
-            Dynamic Content Generator
+            Web Page Creator
           </motion.h1>
           <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
