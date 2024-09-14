@@ -30,7 +30,7 @@ const PricingPage = () => {
     },
     {
       name: "Advanced",
-      price: "$.25",
+      price: "$.20",
       description: "Per generation",
       features: [
         { name: "Generations per day", value: "Unlimited" },
