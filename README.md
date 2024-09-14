@@ -62,15 +62,6 @@ To use Site Sensei, you'll need API keys for the services it relies on:
 
 You can set the model type using the `FREE_MODEL`, `PRO_MODEL`, and `ADVANCED_MODEL` values in your `.env` file to specify which models you want to use from OpenRouter.
 
-## Contributing
-
-We welcome contributions to improve Site Sensei. To contribute:
-
-1. Fork the repo.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes.
-4. Submit a pull request.
-
 ## License
 
 This project is licensed under the MIT License.
