@@ -5,7 +5,9 @@ import { motion } from 'framer-motion';
 import PreviewComponent from './PreviewComponent';
 import { Star, Trash2 } from 'lucide-react';
 
+// Component for displaying a preview card of a page
 const PagePreviewCard = ({ page, previewWidth = 1024, previewHeight = 576, userRole, onDelete, onFavorite }) => {
+  // Function to get the image source for the user avatar
   const getImageSrc = (user) => {
     if (!user || !user.picture) return '/default_icon.png';
    
@@ -16,6 +18,7 @@ const PagePreviewCard = ({ page, previewWidth = 1024, previewHeight = 576, userR
       'auth0.com'
     ];
    
+    // Check if the user's picture URL is from an allowed domain
     if (allowedDomains.some(domain => user.picture.includes(domain))) {
       return user.picture;
     }
@@ -23,20 +26,21 @@ const PagePreviewCard = ({ page, previewWidth = 1024, previewHeight = 576, userR
     return '/default_icon.png';
   };
 
+  // Handler for delete button click
   const handleDelete = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    onDelete(page.id, page.users ? page.users.nickname : 'anonymous'); // Pass 'anonymous' if the user is anonymous
+    onDelete(page.id, page.users ? page.users.nickname : 'anonymous');
   };
   
-
+  // Handler for favorite button click
   const handleFavorite = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    onFavorite(page.id, page.users ? page.users.nickname : 'anonymous', !page.is_favorited); // Pass 'anonymous' if the user is anonymous
+    onFavorite(page.id, page.users ? page.users.nickname : 'anonymous', !page.is_favorited);
   };
   
-
+  // Function to get model information based on the model type
   const getModelInfo = (model) => {
     switch (model) {
       case 'FREE_MODEL':
@@ -50,8 +54,10 @@ const PagePreviewCard = ({ page, previewWidth = 1024, previewHeight = 576, userR
     }
   };
 
+  // Get model information for the current page
   const modelInfo = getModelInfo(page.model_used);
 
+  // Determine the link href based on whether the page has a user or is anonymous
   const linkHref = page.users ? `/page/${page.users.nickname}/${page.name}` : `/page/anon/${page.name}`;
 
   return (
@@ -60,6 +66,7 @@ const PagePreviewCard = ({ page, previewWidth = 1024, previewHeight = 576, userR
         whileHover={{ scale: 1.03 }}
         className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform duration-300 relative"
       >
+        {/* Admin controls for delete and favorite */}
         {userRole === 'admin' && (
           <>
             <motion.div
@@ -85,6 +92,7 @@ const PagePreviewCard = ({ page, previewWidth = 1024, previewHeight = 576, userR
             </motion.div>
           </>
         )}
+        {/* Preview component container */}
         <div className="relative w-full" style={{ paddingBottom: `${(previewHeight / previewWidth) * 100}%` }}>
           <div className="absolute inset-0">
           <PreviewComponent
@@ -97,6 +105,7 @@ const PagePreviewCard = ({ page, previewWidth = 1024, previewHeight = 576, userR
             />
           </div>
         </div>
+        {/* Page information */}
         <div className="p-4">
           <div className="flex justify-between items-center mb-2">
             <p className="text-sm text-text-light-secondary dark:text-text-dark-secondary">
@@ -110,6 +119,7 @@ const PagePreviewCard = ({ page, previewWidth = 1024, previewHeight = 576, userR
             {page.name || 'Untitled Page'}
           </h3>
         </div>
+        {/* User avatar and nickname (if not anonymous) */}
         {!page.is_anonymous && page.users && (
           <div className="absolute bottom-2 right-2 group z-10">
             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white dark:border-gray-700 bg-white dark:bg-gray-800 shadow-md">
