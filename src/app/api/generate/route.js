@@ -1,7 +1,10 @@
 // api/generate/route.js
+
+// Import necessary dependencies
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+// Initialize OpenAI client with custom configuration for OpenRouter
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -11,6 +14,7 @@ const openai = new OpenAI({
   }
 });
 
+// Function to get the appropriate API key based on the selected model
 function getApiKey(model) {
   switch (model) {
     case 'FREE_MODEL':
@@ -24,12 +28,14 @@ function getApiKey(model) {
   }
 }
 
+// Function to extract HTML content from the generated text
 function extractHtml(content) {
   const htmlRegex = /\[START_HTML\]([\s\S]*?)\[END_HTML\]/;
   const match = content.match(htmlRegex);
   return match ? match[1].trim() : null;
 }
 
+// Function to separate JavaScript from HTML content
 function separateJavaScript(html) {
   const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
   let javascript = '';
@@ -44,6 +50,7 @@ function separateJavaScript(html) {
   };
 }
 
+// Asynchronous generator function to process the streaming response
 async function* processStream(stream, controller) {
   let buffer = '';
   let contentYielded = false;
@@ -67,17 +74,21 @@ async function* processStream(stream, controller) {
   }
 }
 
+// Main POST handler function
 export async function POST(request) {
   const controller = new AbortController();
   try {
+    // Extract prompt and model from the request body
     const { prompt, model } = await request.json();
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
     }
 
+    // Get the appropriate model name
     const model_name = getApiKey(model);
     console.log('Using model:', model_name);
 
+    // Create a chat completion request to OpenAI
     const stream = await openai.chat.completions.create({
       model: model_name,
       messages: [
@@ -117,17 +128,24 @@ export async function POST(request) {
       signal: controller.signal,
     });
 
+    // Process the streaming response
     let generatedContent = '';
     for await (const chunk of processStream(stream, controller)) {
       generatedContent += chunk;
     }
 
     console.log('Generated content:', generatedContent);
+    
+    // Extract HTML from the generated content
     const html = extractHtml(generatedContent);
     if (!html) {
       throw new Error('Failed to extract valid HTML from the generated content');
     }
+    
+    // Separate JavaScript from HTML
     const { html: htmlWithoutScripts, javascript } = separateJavaScript(html);
+    
+    // Return the processed HTML and JavaScript
     return NextResponse.json({
       message: 'HTML and JavaScript generated successfully',
       html: htmlWithoutScripts,
