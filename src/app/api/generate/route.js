@@ -113,7 +113,7 @@ export async function POST(request) {
         }
       ],
       temperature: 0.3,
-      stream: true,
+      stream: true,   
       signal: controller.signal,
     });
 

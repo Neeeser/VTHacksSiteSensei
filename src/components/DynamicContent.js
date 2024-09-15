@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 
+// DynamicContent component for rendering HTML and JavaScript in an isolated environment
 const DynamicContent = ({ html, javascript, onInteraction }) => {
   const containerRef = useRef(null);
   const [jsError, setJsError] = useState(null);
@@ -8,6 +9,7 @@ const DynamicContent = ({ html, javascript, onInteraction }) => {
 
   useEffect(() => {
     if (containerRef.current) {
+      // Create an iframe to isolate the rendered content
       const iframe = document.createElement('iframe');
       iframe.style.width = '100%';
       iframe.style.height = '100%';
@@ -15,6 +17,7 @@ const DynamicContent = ({ html, javascript, onInteraction }) => {
       containerRef.current.innerHTML = '';
       containerRef.current.appendChild(iframe);
      
+      // Get the iframe's document and write the HTML content
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
       iframeDoc.open();
       iframeDoc.write(`
@@ -37,7 +40,7 @@ const DynamicContent = ({ html, javascript, onInteraction }) => {
       iframeDoc.close();
 
       iframe.onload = () => {
-        // Add event listeners for interactions
+        // Add event listeners for interactions (clicks on links and form submissions)
         iframeDoc.body.addEventListener('click', (e) => {
           if (e.target.tagName === 'A' || e.target.closest('a')) {
             e.preventDefault();
@@ -49,7 +52,7 @@ const DynamicContent = ({ html, javascript, onInteraction }) => {
           onInteraction && onInteraction(e);
         }, true);
 
-        // Override window.alert and window.confirm
+        // Override window.alert and window.confirm to use custom UI
         iframe.contentWindow.alert = (message) => {
           setCustomAlert({ type: 'alert', message });
         };
@@ -58,7 +61,7 @@ const DynamicContent = ({ html, javascript, onInteraction }) => {
           return false; // Default to canceling the action
         };
 
-        // Execute JavaScript in a try-catch block
+        // Execute JavaScript in a try-catch block to catch and report errors
         if (javascript) {
           const script = iframeDoc.createElement('script');
           script.text = `
@@ -83,24 +86,31 @@ const DynamicContent = ({ html, javascript, onInteraction }) => {
       };
       window.addEventListener('message', handleMessage);
 
+      // Clean up event listener on component unmount
       return () => {
         window.removeEventListener('message', handleMessage);
       };
     }
   }, [html, javascript, onInteraction]);
 
+  // Handler to close custom alert/confirm dialogs
   const handleAlertClose = () => {
     setCustomAlert(null);
   };
 
   return (
     <div className="w-full h-full relative">
+      {/* Container for the iframe */}
       <div ref={containerRef} className="w-full h-full" />
+      
+      {/* Display JavaScript errors if any */}
       {jsError && (
         <div className="absolute bottom-2 right-2 bg-red-100 text-red-700 px-4 py-2 rounded-md text-sm">
           JavaScript Error: {jsError}
         </div>
       )}
+      
+      {/* Custom alert/confirm dialog */}
       {customAlert && (
         <div className="absolute inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
           <div className="bg-background-light dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary rounded-lg shadow-xl p-6 max-w-sm w-full mx-4">
