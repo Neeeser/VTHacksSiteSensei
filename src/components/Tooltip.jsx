@@ -31,7 +31,7 @@ const Tooltip = ({ content, children, delay = 400, maxHeight = 200 }) => {
   const hideTooltip = () => {
     timeoutRef.current = setTimeout(() => {
       setIsVisible(false);
-    }, 300); // Delay hiding to allow time for mouse to enter tooltip
+    }, 400); // Delay hiding to allow time for mouse to enter tooltip
   };
 
   const handleTooltipMouseEnter = () => {
