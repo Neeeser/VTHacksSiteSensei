@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// EditChatbox component for editing page content
 const EditChatbox = ({
   isVisible,
   onSubmit,
@@ -17,10 +18,12 @@ const EditChatbox = ({
   auth0Id,
   userNickname
 }) => {
+  // State for edit message, loading status, and error
   const [editMessage, setEditMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Function to handle form submission
   const handleSubmit = async () => {
     setIsLoading(true);
     setError('');
@@ -37,7 +40,7 @@ const EditChatbox = ({
         }),
       });
       const editData = await editResponse.json();
-      
+     
       if (!editResponse.ok) {
         throw new Error(editData.error || 'Failed to edit content');
       }
@@ -58,11 +61,11 @@ const EditChatbox = ({
         }),
       });
       const updateData = await updateResponse.json();
-
       if (!updateResponse.ok) {
         throw new Error(updateData.error || 'Failed to update content in database');
       }
 
+      // Call the onSubmit callback with updated content
       onSubmit(editData.html, editData.javascript);
       setEditMessage('');
     } catch (error) {
@@ -73,6 +76,7 @@ const EditChatbox = ({
     }
   };
 
+  // Render the component
   return (
     <AnimatePresence>
       {isVisible && (
@@ -83,12 +87,15 @@ const EditChatbox = ({
           transition={{ duration: 0.5, ...animationProps.transition }}
           className={`bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 ${className}`}
         >
+          {/* Title */}
           <h3 className="text-lg font-semibold mb-4 text-text-light-primary dark:text-text-dark-primary">
             {title}
           </h3>
+          {/* Description */}
           <p className="text-text-light-secondary dark:text-text-dark-secondary mb-4">
             {description}
           </p>
+          {/* Textarea for edit message */}
           <textarea
             value={editMessage}
             onChange={(e) => setEditMessage(e.target.value)}
@@ -96,9 +103,11 @@ const EditChatbox = ({
             className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white dark:bg-gray-700 text-text-light-primary dark:text-text-dark-primary mb-4"
             rows={4}
           />
+          {/* Error message display */}
           {error && (
             <p className="text-red-500 mb-4">{error}</p>
           )}
+          {/* Submit button with animation */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
